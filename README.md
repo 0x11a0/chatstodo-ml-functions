@@ -1,1 +1,5 @@
-# chatstodo-ml-functions
+# Chatstodo ML functions
+
+### Instructions
+
+1. Create a virtual environment
