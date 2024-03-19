@@ -4,10 +4,8 @@ import os
 
 load_dotenv()
 
-openai_key = os.getenv('OPENAI_API_KEY')
-
 class OpenAiHelper:
-    def __init__(self, api_key = openai_key, model='gpt-3.5-turbo-1106'):
+    def __init__(self, api_key, model='gpt-3.5-turbo-1106'):
         self.api_key = api_key
         openai.api_key = self.api_key
         self.model = model

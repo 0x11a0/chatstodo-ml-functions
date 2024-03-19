@@ -7,11 +7,11 @@ from concurrent import futures
 # from dotenv import load_dotenv
 # load_dotenv()
 
-# openai_key = os.getenv('OPENAI_API_KEY')
+openai_key = os.getenv('OPENAI_API_KEY')
 
 class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceServicer):
-    def __init__(self):
-        self.openai_helper = OpenAiHelper()
+    def __init__(self, api_key):
+        self.openai_helper = OpenAiHelper(api_key)
 
     def AnalyzeChat(self, request, context):
 
@@ -37,7 +37,7 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
 def serve():
     # Have a threadpool of 10 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers = 10))
-    chatstodo_ml_service_pb2_grpc.add_ChatAnalysisServiceServicer_to_server(ChatAnalysisServiceImpl(), server)
+    chatstodo_ml_service_pb2_grpc.add_ChatAnalysisServiceServicer_to_server(ChatAnalysisServiceImpl(openai_key), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()
