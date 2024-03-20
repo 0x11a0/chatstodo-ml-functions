@@ -1,8 +1,4 @@
 from openai import OpenAI
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
 
 class OpenAiHelper:
     def __init__(self, api_key, model='gpt-3.5-turbo-1106'):
@@ -14,7 +10,7 @@ class OpenAiHelper:
         try:
             response = self.client.chat.completions.create(
                 model = self.model,
-                prompt = prompt,
+                messages = [{"role" : "user", "content" : prompt}]
             )
             return response.choices[0].message.content
         except Exception as e:
@@ -23,17 +19,17 @@ class OpenAiHelper:
 
     # Prompt Generation Functions    
     def generate_prompt_for_summary(self, userid, chat_messages):
-        prompt = "Summarize the following chat messages relevant to" + userid + ": \n"
+        prompt = "Summarize the following chat messages relevant to" + str(userid) + ": \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
     def generate_prompt_for_task(self, userid, chat_messages):
-        prompt = "Extract tasks from the following chat messages relevant to" + userid + ": \n"
+        prompt = "Extract tasks from the following chat messages relevant to" + str(userid) + ": \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
     def generate_prompt_for_event(self, userid, chat_messages):
-        prompt = "Extract events from the following chat messages relevant to" + userid + ": \n"
+        prompt = "Extract events from the following chat messages relevant to" + str(userid) + ": \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
