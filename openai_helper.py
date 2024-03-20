@@ -19,17 +19,17 @@ class OpenAiHelper:
 
     # Prompt Generation Functions    
     def generate_prompt_for_summary(self, userid, chat_messages):
-        prompt = "Summarize the following chat messages relevant to" + str(userid) + ": \n"
+        prompt = "You are a personal AI assistant to user: " + str(userid) + "Summarize the following chat messages relevant to" + str(userid) + ": \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
     def generate_prompt_for_task(self, userid, chat_messages):
-        prompt = "Extract tasks from the following chat messages relevant to" + str(userid) + ": \n"
+        prompt = "You are a personal AI assistant to user: " + str(userid) + "Identify and extract only tasks from the following chat messages relevant only to user:" + str(userid) + " in the following format - task 1: (task) \n task 2: (task). Ignore tasks for other users and do not include events. \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
     def generate_prompt_for_event(self, userid, chat_messages):
-        prompt = "Extract events from the following chat messages relevant to" + str(userid) + ": \n"
+        prompt = "You are a personal AI assistant to user: " + str(userid) + "Identify and extract only events from the following chat messages relevant only to user:" + str(userid) + "in the following format - event 1: (event) \n event 2: (event). Ignore events for other users and do not include tasks. \n"
         prompt += "\n".join(chat_messages)
         return prompt
     
