@@ -1,7 +1,7 @@
 from openai import OpenAI
 
 class OpenAiHelper:
-    def __init__(self, api_key, model='gpt-3.5-turbo-1106'):
+    def __init__(self, api_key, model='gpt-3.5-turbo-0125'):
         self.client = OpenAI()
         self.api_key = api_key
         self.model = model
@@ -10,38 +10,35 @@ class OpenAiHelper:
         try:
             response = self.client.chat.completions.create(
                 model = self.model,
-                messages = [{"role" : "user", "content" : prompt}]
+                messages = [{"role" : "user", "content" : prompt}],
+                response_format = {"type": "json_object"},
+                seed = 1
             )
+            print(response.choices[0].message.content)
             return response.choices[0].message.content
         except Exception as e:
             print(f"Error getting response from OpenAI: {e}")
             return ""
 
-    # Prompt Generation Functions    
-    def generate_prompt_for_summary(self, userid, chat_messages):
-        prompt = "You are a personal AI assistant to user: " + str(userid) + "Summarize the following chat messages relevant to" + str(userid) + ": \n"
-        prompt += "\n".join(chat_messages)
+    def get_prompt(self):
+
+        file_name = "prompt.txt"
+        prompt = ""
+
+        try:
+            with open(file_name, 'r') as file:
+                prompt += file.read()
+        except Exception as e:
+            print(f"Error: {e}")
         return prompt
-    
-    def generate_prompt_for_task(self, userid, chat_messages):
-        prompt = "You are a personal AI assistant to user: " + str(userid) + "Identify and extract only tasks from the following chat messages relevant only to user:" + str(userid) + " in the following format - task 1: (task) \n task 2: (task). Ignore tasks for other users and do not include events. \n"
-        prompt += "\n".join(chat_messages)
-        return prompt
-    
-    def generate_prompt_for_event(self, userid, chat_messages):
-        prompt = "You are a personal AI assistant to user: " + str(userid) + "Identify and extract only events from the following chat messages relevant only to user:" + str(userid) + "in the following format - event 1: (event) \n event 2: (event). Ignore events for other users and do not include tasks. \n"
-        prompt += "\n".join(chat_messages)
-        return prompt
-    
-    # Summarize, task and event functions
-    def get_chat_summary(self, userid, chat_messages):
-        prompt = self.generate_prompt_for_summary(userid, chat_messages)
-        return self.get_response(prompt)
-    
-    def get_tasks(self, userid, chat_messages):
-        prompt = self.generate_prompt_for_task(userid, chat_messages)
-        return self.get_response(prompt)
-    
-    def get_events(self, userid, chat_messages):
-        prompt = self.generate_prompt_for_event(userid, chat_messages)
-        return self.get_response(prompt)
+
+    def analyze_chat(self, user_id, chat_messages):
+        try:
+            prompt = self.get_prompt()
+            prompt = prompt.replace("{usermame}", str(user_id))
+
+            chat_messages_str = "\n".join(chat_messages)
+            prompt_with_chat_message = f"{prompt}\n\n{chat_messages_str}"
+        except Exception as e:
+            print(f"Error: {e}")
+        return self.get_response(prompt_with_chat_message)
