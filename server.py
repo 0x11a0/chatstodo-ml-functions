@@ -20,9 +20,9 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
         user_id = request.user_id
 
         # Process the messages
-        summary = self.openai_helper.get_chat_summary(' '.join(chat_messages))
-        tasks = self.openai_helper.get_tasks(' '.join(chat_messages))
-        events = self.openai_helper.get_events(' '.join(chat_messages))
+        summary = self.openai_helper.get_chat_summary(user_id, chat_messages)
+        tasks = self.openai_helper.get_tasks(user_id, chat_messages)
+        events = self.openai_helper.get_events(user_id, chat_messages)
 
         # Create and return a response
         response = chatstodo_ml_service_pb2.ChatAnalysisResponse(
