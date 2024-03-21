@@ -1,9 +1,8 @@
 from openai import OpenAI
 
 class OpenAiHelper:
-    def __init__(self, api_key, model='gpt-3.5-turbo-0125'):
-        self.client = OpenAI()
-        self.api_key = api_key
+    def __init__(self, model='gpt-3.5-turbo-0125'):
+        self.client = OpenAI() # Default instantiates to take the key using os.get("OPENAI_API_KEY")
         self.model = model
 
     def get_response(self, prompt):

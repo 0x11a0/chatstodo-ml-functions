@@ -10,13 +10,12 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-openai_key = os.getenv('OPENAI_API_KEY')
 port = os.getenv('PORT')
 logging.basicConfig(level=logging.INFO)
 
 class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceServicer):
-    def __init__(self, api_key):
-        self.openai_helper = OpenAiHelper(api_key)
+    def __init__(self):
+        self.openai_helper = OpenAiHelper()
 
     def AnalyzeChat(self, request, context):
 
@@ -69,7 +68,7 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
 def serve():
     # Have a threadpool of 10 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers = 10))
-    chatstodo_ml_service_pb2_grpc.add_ChatAnalysisServiceServicer_to_server(ChatAnalysisServiceImpl(openai_key), server)
+    chatstodo_ml_service_pb2_grpc.add_ChatAnalysisServiceServicer_to_server(ChatAnalysisServiceImpl(), server)
     print(f"ML Server is running on port {port}")
     server.add_insecure_port('[::]:' + str(port))
     try:

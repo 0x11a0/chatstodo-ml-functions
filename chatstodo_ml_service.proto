@@ -23,7 +23,7 @@ message EventDetail {
   string event = 1;     // Identified event
   string location = 2;  // Identified location
   string time = 3;      // Identified time
-  string date = 4;
+  string date = 4;      // Identified date
 }
 
 // Response containing the post-analyzed chats
