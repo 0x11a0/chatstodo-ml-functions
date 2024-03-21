@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 openai_key = os.getenv('OPENAI_API_KEY')
+port = os.getenv('PORT')
 logging.basicConfig(level=logging.INFO)
 
 class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceServicer):
@@ -21,7 +22,6 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
 
         # Extract chat messages from request
         chat_messages = [chat_message.chat_message for chat_message in request.message_text]
-        print(request.message_text)
         user_id = request.user_id
         processed_chat = ""
 
@@ -46,7 +46,6 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
                 tasks = processed_chat.get("Tasks")
                 events_dicts = processed_chat.get("Events", [])
 
-                print(f"Tasks: {tasks}")
                 # Update response
                 response.summary.extend(summary)
                 response.tasks.extend(tasks)
@@ -62,9 +61,6 @@ class ChatAnalysisServiceImpl(chatstodo_ml_service_pb2_grpc.ChatAnalysisServiceS
                     # Update response
                     response.events.append(event_message)
 
-                for event in response.events:
-                    print(f"Event: {event.event}, Location: {event.location}, Date: {event.date}, Time: {event.time}")
-
         except Exception as e:
             logging.error(f"Error processing request: {e}")
 
@@ -74,11 +70,13 @@ def serve():
     # Have a threadpool of 10 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers = 10))
     chatstodo_ml_service_pb2_grpc.add_ChatAnalysisServiceServicer_to_server(ChatAnalysisServiceImpl(openai_key), server)
-    port = 50052
     print(f"ML Server is running on port {port}")
-    server.add_insecure_port('[::]:50052')
-    server.start()
-    server.wait_for_termination()
+    server.add_insecure_port('[::]:' + str(port))
+    try:
+        server.start()
+        server.wait_for_termination()
+    except Exception as e:
+        logging.error(f"Error in server: {e}")
 
 if __name__ == '__main__':
     serve()
