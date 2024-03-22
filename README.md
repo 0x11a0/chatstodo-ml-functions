@@ -83,7 +83,7 @@ pip install -r requirements.txt
 At any point of time if you have installed a dependency. Update requirements.txt with
 
 ```bash
-pip freeze -r requirements.txt
+pip freeze > requirements.txt
 ```
 
 ### Environment Variables
